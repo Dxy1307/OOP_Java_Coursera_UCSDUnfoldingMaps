@@ -23,7 +23,7 @@ import processing.core.PApplet;
  */
 public class AirportMap extends PApplet {
 	
-	UnfoldingMap map;
+	UnfoldingMap map;	
 	private List<Marker> airportList;
 	List<Marker> routeList;
 	

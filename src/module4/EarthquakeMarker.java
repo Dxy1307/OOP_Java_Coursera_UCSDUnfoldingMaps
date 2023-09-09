@@ -15,6 +15,8 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 	
 	// Did the earthquake occur on land?  This will be set by the subclasses.
 	protected boolean isOnLand;
+	
+	protected boolean isRecent;
 
 	// SimplePointMarker has a field "radius" which is inherited
 	// by Earthquake marker:
@@ -50,6 +52,8 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 		// Add a radius property and then set the properties
 		java.util.HashMap<String, Object> properties = feature.getProperties();
 		float magnitude = Float.parseFloat(properties.get("magnitude").toString());
+		String age = properties.get("age").toString().toLowerCase();
+		isRecent = age.contains("day");
 		properties.put("radius", 2*magnitude );
 		setProperties(properties);
 		this.radius = 1.75f*getMagnitude();
@@ -81,6 +85,14 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 	// You might find the getters below helpful.
 	private void colorDetermine(PGraphics pg) {
 		//TODO: Implement this method
+		float depth = getDepth();
+		if(depth >= THRESHOLD_DEEP) {
+			pg.fill(255, 0, 0);
+		} else if(depth >= THRESHOLD_INTERMEDIATE) {
+			pg.fill(0, 0, 255);
+		} else {
+			pg.fill(255, 255, 0);
+		}
 	}
 	
 	

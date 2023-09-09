@@ -146,6 +146,18 @@ public class EarthquakeCityMap extends PApplet {
 	private void selectMarkerIfHover(List<Marker> markers)
 	{
 		// TODO: Implement this method
+		if(lastSelected != null) {
+			return;
+		}
+		
+		for(Marker m : markers) {
+			CommonMarker marker = (CommonMarker) m;
+			if(marker.isInside(map, mouseX, mouseY)) {
+				lastSelected = marker;
+				marker.setSelected(true);
+				return;
+			}
+		}
 	}
 	
 	/** The event handler for mouse clicks
@@ -159,6 +171,61 @@ public class EarthquakeCityMap extends PApplet {
 		// TODO: Implement this method
 		// Hint: You probably want a helper method or two to keep this code
 		// from getting too long/disorganized
+		if(lastClicked != null) {
+			unhideMarkers();
+			lastClicked = null;
+		} else if(lastClicked == null) {
+			selectEarthQuake();
+			if(lastClicked == null) {
+				selectCity();
+			}
+		}
+	}
+	
+	public void selectEarthQuake() {
+		if(lastClicked != null) {
+			return;
+		}
+		for(Marker qm : quakeMarkers) {
+			EarthquakeMarker em = (EarthquakeMarker) qm;
+			if(!em.isHidden() && em.isInside(map, mouseX, mouseY)) {
+				lastClicked = em;
+				for(Marker mhide : quakeMarkers) {
+					if(mhide != lastClicked) {
+						mhide.setHidden(true);
+					}
+				}
+				for(Marker mhide : cityMarkers) {
+					if(mhide.getDistanceTo(em.getLocation()) > em.threatCircle()) {
+						mhide.setHidden(true);
+					}
+				}
+				return;
+			}
+		}
+	}
+	
+	public void selectCity() {
+		if(lastClicked != null) {
+			return;
+		}
+		for(Marker marker : cityMarkers) {
+			if(!marker.isHidden() && marker.isInside(map, mouseX, mouseY)) {
+				lastClicked = (CommonMarker) marker;
+				for(Marker mhide : cityMarkers) {
+					if(mhide != lastClicked) {
+						mhide.setHidden(true);
+					}
+				}
+				for(Marker mhide : quakeMarkers) {
+					EarthquakeMarker quakeMarker = (EarthquakeMarker) mhide;
+					if(quakeMarker.getDistanceTo(marker.getLocation()) > quakeMarker.threatCircle()) {
+						quakeMarker.setHidden(true);
+					}
+				}
+				return;
+			}
+		}
 	}
 	
 	

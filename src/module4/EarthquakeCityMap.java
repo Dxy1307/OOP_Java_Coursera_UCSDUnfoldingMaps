@@ -76,11 +76,11 @@ public class EarthquakeCityMap extends PApplet {
 		
 		// FOR TESTING: Set earthquakesURL to be one of the testing files by uncommenting
 		// one of the lines below.  This will work whether you are online or offline
-		//earthquakesURL = "test1.atom";
+		// earthquakesURL = "test1.atom";
 		//earthquakesURL = "test2.atom";
 		
 		// WHEN TAKING THIS QUIZ: Uncomment the next line
-		//earthquakesURL = "quiz1.atom";
+		earthquakesURL = "quiz1.atom";
 		
 		
 		// (2) Reading in earthquake data and geometric properties
@@ -141,17 +141,56 @@ public class EarthquakeCityMap extends PApplet {
 		textSize(12);
 		text("Earthquake Key", 50, 75);
 		
-		fill(color(255, 0, 0));
-		ellipse(50, 125, 15, 15);
-		fill(color(255, 255, 0));
-		ellipse(50, 175, 10, 10);
-		fill(color(0, 0, 255));
-		ellipse(50, 225, 5, 5);
-		
+		fill(255, 0, 0);
+		triangle(55, 110, 60, 100, 65, 110);
 		fill(0, 0, 0);
-		text("5.0+ Magnitude", 75, 125);
-		text("4.0+ Magnitude", 75, 175);
-		text("Below 4.0", 75, 225);
+		text("City Marker", 72, 104);
+		
+		fill(255, 255, 255);
+		ellipse(60, 123, 13, 13);
+		fill(0, 0, 0);
+		text("Land Quake", 72, 122);
+		
+		fill(255, 255, 255);
+		rect(54, 136, 13, 13);
+		fill(0, 0, 0);
+		text("Ocean Quake", 72, 142);
+		
+		text("Size ~ Magnitude", 50, 160);
+		
+		fill(255, 255, 0);
+		ellipse(60, 180, 12, 12);
+		fill(0);
+		text("Shallow", 72, 179);
+		
+		fill(0, 0, 255);
+		ellipse(60, 198, 12, 12);
+		fill(0);
+		text("Intermediate", 72, 197);
+		
+		fill(255, 0, 0);
+		ellipse(60, 216, 12, 12);
+		fill(0);
+		text("Deep", 72, 215);
+		
+		fill(255);
+		ellipse(60, 234, 12, 12);
+		line(53, 227, 66, 242);
+		line(53, 243, 66, 226);
+		fill(0);
+		text("Recent", 72, 234);
+		
+//		fill(color(255, 0, 0));
+//		ellipse(50, 125, 15, 15);
+//		fill(color(255, 255, 0));
+//		ellipse(50, 175, 10, 10);
+//		fill(color(0, 0, 255));
+//		ellipse(50, 225, 5, 5);
+//		
+//		fill(0, 0, 0);
+//		text("5.0+ Magnitude", 75, 125);
+//		text("4.0+ Magnitude", 75, 175);
+//		text("Below 4.0", 75, 225);
 	}
 
 	
@@ -170,7 +209,9 @@ public class EarthquakeCityMap extends PApplet {
 		// If isInCountry ever returns true, isLand should return true.
 		for (Marker m : countryMarkers) {
 			// TODO: Finish this method using the helper method isInCountry
-			
+			if(isInCountry(earthquake, m)) {
+				return true;
+			}
 		}
 		
 		
@@ -210,7 +251,21 @@ public class EarthquakeCityMap extends PApplet {
 		//  * If you know your Marker, m, is a LandQuakeMarker, then it has a "country" 
 		//      property set.  You can get the country with:
 		//        String country = (String)m.getProperty("country");
-		
+	
+		for(Marker country: countryMarkers) {
+			int countLand = 0;
+			int countOcean = 0;
+			for(Marker q : quakeMarkers) {
+				if(country.getProperty("name") == q.getProperty("country")) {
+					countLand++;
+				}
+				if(q.getProperty("country") == null) {
+					countOcean++;
+				}
+			}
+			System.out.println(country.getProperty("name") + ": " + countLand);
+			System.out.println("OceanQuake: " + countOcean);
+		}
 		
 	}
 	
@@ -227,7 +282,7 @@ public class EarthquakeCityMap extends PApplet {
 		// some countries represented it as MultiMarker
 		// looping over SimplePolygonMarkers which make them up to use isInsideByLoc
 		if(country.getClass() == MultiMarker.class) {
-				
+		
 			// looping over markers making up MultiMarker
 			for(Marker marker : ((MultiMarker)country).getMarkers()) {
 					
